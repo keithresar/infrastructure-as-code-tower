@@ -6,6 +6,10 @@
   become: True
 
   tasks:
+    - debug:
+        var: vars
+    - debug:
+        var: environment
     - fail:
         msg: "student_ip_address not defined"
       when: student_ip_address is not defined
