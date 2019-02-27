@@ -13,21 +13,9 @@
         msg: "student_number not defined"
       when: student_number is not defined
 
-    #- name: Find instance number
-    #  set_fact:
-    #    student_number: "{{ idx }}"
-    #    student_user: "student{{ idx }}"
-    #  loop: "{{ groups['tag_role_bastion'] }}"
-    #  when: inventory_hostname == item
-    #  loop_control:
-    #    index_var: idx
-
     - name: Find student number
       set_fact:
         student_user: "student{{ student_number }}"
-
-    - debug:
-        var: groups
 
     - name: Bootstrap student instance
       block:
