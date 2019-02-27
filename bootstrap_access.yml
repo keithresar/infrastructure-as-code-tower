@@ -2,54 +2,63 @@
 
 
 - hosts: tag_role_bastion
-  gather_facts: False
+  gather_fgroups['tag_role_bastion']acts: False
   become: True
 
   tasks:
-    - debug:
-        var: vars
-    - debug:
-        var: environment
     - fail:
         msg: "student_ip_address not defined"
       when: student_ip_address is not defined
+    - fail:
+        msg: "student_number not defined"
+      when: student_number is not defined
 
-    - name: Find instance number
+    #- name: Find instance number
+    #  set_fact:
+    #    student_number: "{{ idx }}"
+    #    student_user: "student{{ idx }}"
+    #  loop: "{{ groups['tag_role_bastion'] }}"
+    #  when: inventory_hostname == item
+    #  loop_control:
+    #    index_var: idx
+
+    - name: Find student number
       set_fact:
-        student_number: "{{ idx }}"
-        student_user: "student{{ idx }}"
-      loop: "{{ groups['tag_role_bastion'] }}"
-      when: inventory_hostname == item
-      loop_control:
-        index_var: idx
+        student_user: "student{{ student_number }}"
 
-    - name: Enable user access to bastion assets
-      firewalld:
-        immediate: yes
-        permanent: yes
-        state: enabled
-        port: 1-65534/tcp
-        source: "{{ student_ip_address }}"
+    - debug:
+        var: groups
 
-    - name: Start CHE
-      docker_container:
-        name: che_root
-        image: eclipse/che
-        command: dir up
-        volumes:
-          - /var/run/docker.sock:/var/run/docker.sock
-          - /tmp/x:/data
-          - "/home/{{ student_user }}/infrastructure-as-code-lab:/chedir"
-        env:
-          CHE_HOST: "{{ ansible_ssh_host }}"
+    - name: Bootstrap student instance
+      block:
+        - name: Enable user access to bastion assets
+          firewalld:
+            immediate: yes
+            permanent: yes
+            state: enabled
+            port: 1-65534/tcp
+            source: "{{ student_ip_address }}"
 
-    - name: Wait for CHE
-      wait_for:
-        port: 8080
-        delay: 10
-        timeout: 900
+        - name: Start CHE
+          docker_container:
+            name: che_root
+            image: eclipse/che
+            command: dir up
+            volumes:
+              - /var/run/docker.sock:/var/run/docker.sock
+              - /tmp/x:/data
+              - "/home/{{ student_user }}/infrastructure-as-code-lab:/chedir"
+            env:
+              CHE_HOST: "{{ ansible_ssh_host }}"
 
-    - name: CHE Endpoint
-      debug:
-        msg: "Access your CHE workspace at this URL: http://{{ ansible_ssh_host }}:8080/"
+        - name: Wait for CHE
+          wait_for:
+            port: 8080
+            delay: 10
+            timeout: 900
 
+        - name: CHE Endpoint
+          debug:
+            msg: "Access your CHE workspace at this URL: http://{{ ansible_ssh_host }}:8080/"
+
+      when: groups['tag_role_bastion'][student_number] == inventory_hostname
