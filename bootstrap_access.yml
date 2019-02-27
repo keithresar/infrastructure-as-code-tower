@@ -13,16 +13,6 @@
         msg: "student_number not defined"
       when: student_number is not defined
 
-    - debug:
-        var: groups['tag_role_bastion']
-    - debug:
-        var: groups['tag_role_bastion'][0]
-    - debug:
-        var: groups['tag_role_bastion'][student_number|int]
-    - debug:
-        var: groups['tag_role_bastion'][student_number]
-      when: groups['tag_role_bastion'][student_number] == inventory_hostname
-
     - name: Find student number
       set_fact:
         student_user: "student{{ student_number }}"
