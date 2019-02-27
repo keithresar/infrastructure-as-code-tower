@@ -2,7 +2,7 @@
 
 
 - hosts: tag_role_bastion
-  gather_fgroups['tag_role_bastion']acts: False
+  gather_facts: False
   become: True
 
   tasks:
