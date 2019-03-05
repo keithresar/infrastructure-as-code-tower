@@ -1,25 +1,49 @@
 ---
 
-
-- hosts: tag_role_web
+- hosts: all
   gather_facts: False
-  become: True
+  become: False
 
   tasks:
     - fail:
         msg: "student_number not defined"
       when: student_number is not defined
 
-    - name: Web deny all
-      block:
-        - ec2_group:
-            aws_access_key: "{{ aws_access_key }}"
-            aws_secret_key: "{{ aws_secret_key }}"
-            region: "{{ aws_region }}"
-            vpc_id: "{{ ec2_vpc_id }}"
-            name: "web-student{{ student_number }}"
-            description: "web-student{{ student_number }}"
-            rules:
 
+- hosts: tag_role_web
+  gather_facts: False
+  become: False
+
+  tasks:
+    - name: Set deny all on web SG
+      ec2_group:
+        aws_access_key: "{{ aws_access_key }}"
+        aws_secret_key: "{{ aws_secret_key }}"
+        region: "{{ aws_region }}"
+        name: "web-{{ student_number }}"
+        description: "web-{{ student_number }}"
+        vpc_id: "{{ ec2_vpc_id }}"
+        group_id: "{{ ec2_security_group_ids }}"
+        rules:
+      delegate_to: localhost
       when: groups['tag_role_web'][student_number|int] == inventory_hostname
+
+
+- hosts: tag_role_api
+  gather_facts: False
+  become: False
+
+  tasks:
+    - name: Set deny all on api SG
+      ec2_group:
+        aws_access_key: "{{ aws_access_key }}"
+        aws_secret_key: "{{ aws_secret_key }}"
+        region: "{{ aws_region }}"
+        name: "api-{{ student_number }}"
+        description: "api-{{ student_number }}"
+        vpc_id: "{{ ec2_vpc_id }}"
+        group_id: "{{ ec2_security_group_ids }}"
+        rules:
+      delegate_to: localhost
+      when: groups['tag_role_api'][student_number|int] == inventory_hostname
 
