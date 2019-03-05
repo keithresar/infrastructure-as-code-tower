@@ -1,0 +1,25 @@
+---
+
+
+- hosts: tag_role_web
+  gather_facts: False
+  become: True
+
+  tasks:
+    - fail:
+        msg: "student_number not defined"
+      when: student_number is not defined
+
+    - name: Web deny all
+      block:
+        - ec2_group:
+            aws_access_key: "{{ aws_access_key }}"
+            aws_secret_key: "{{ aws_secret_key }}"
+            region: "{{ aws_region }}"
+            vpc_id: "{{ ec2_vpc_id }}"
+            name: "web-student{{ student_number }}"
+            description: "web-student{{ student_number }}"
+            rules:
+
+      when: groups['tag_role_web'][student_number|int] == inventory_hostname
+
