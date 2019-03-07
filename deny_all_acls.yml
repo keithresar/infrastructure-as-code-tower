@@ -17,8 +17,6 @@
   tasks:
     - name: Set deny all on web SG
       ec2_group:
-        #aws_access_key: "{{ aws_access_key }}"
-        #aws_secret_key: "{{ aws_secret_key }}"
         region: "{{ aws_region }}"
         name: "web-{{ student_number }}"
         description: "web-{{ student_number }}"
@@ -36,8 +34,6 @@
   tasks:
     - name: Set deny all on api SG
       ec2_group:
-        #aws_access_key: "{{ aws_access_key }}"
-        #aws_secret_key: "{{ aws_secret_key }}"
         region: "{{ aws_region }}"
         name: "api-{{ student_number }}"
         description: "api-{{ student_number }}"

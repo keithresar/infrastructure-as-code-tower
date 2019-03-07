@@ -6,8 +6,6 @@
   tasks:
     - name: Find VPC
       ec2_vpc_net:
-        #aws_access_key: "{{ aws_access_key }}"
-        #aws_secret_key: "{{ aws_secret_key }}"
         region: "{{ aws_region }}"
         name: "{{ aws_vpc_name }}"
         cidr_block: "{{ aws_vpc_cidr }}"
@@ -16,8 +14,6 @@
 
     - name: Find api subnet
       ec2_vpc_subnet:
-        #aws_access_key: "{{ aws_access_key }}"
-        #aws_secret_key: "{{ aws_secret_key }}"
         region: "{{ aws_region }}"
         vpc_id: "{{ vpc.vpc.id }}"
         cidr: "{{ aws_api_subnet_cidr }}"
@@ -25,8 +21,6 @@
 
     - name: Find api security group
       ec2_group_facts:
-        #aws_access_key: "{{ aws_access_key }}"
-        #aws_secret_key: "{{ aws_secret_key }}"
         region: "{{ aws_region }}"
         filters:
           vpc-id: "{{ vpc.vpc.id }}"
@@ -35,8 +29,6 @@
 
     - name: Create Elasticache Subnet Group
       elasticache_subnet_group:
-        #aws_access_key: "{{ aws_access_key }}"
-        #aws_secret_key: "{{ aws_secret_key }}"
         region: "{{ aws_region }}"
         state: present
         name: "api-es-sg"
@@ -45,8 +37,6 @@
 
     - name: Create Redis Elasticache instance
       elasticache:
-        #aws_access_key: "{{ aws_access_key }}"
-        #aws_secret_key: "{{ aws_secret_key }}"
         region: "{{ aws_region }}"
         name: "api-es"
         state: present
