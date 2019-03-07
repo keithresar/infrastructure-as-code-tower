@@ -2,7 +2,6 @@
 
 - hosts: all
   gather_facts: False
-  become: True
 
   tasks:
     - fail:
@@ -12,6 +11,7 @@
 
 - hosts: tag_role_web
   gather_facts: False
+  become: True
 
   tasks:
     - lineinfile:
