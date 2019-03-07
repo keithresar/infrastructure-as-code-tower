@@ -3,9 +3,6 @@
 - hosts: localhost
   gather_facts: False
 
-  vars:
-    aws_region: 
-
   tasks:
     - name: Find VPC
       ec2_vpc_net:
