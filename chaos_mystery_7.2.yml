@@ -1,6 +1,5 @@
 ---
 
-
 - hosts: all
   gather_facts: False
   become: False
@@ -15,14 +14,10 @@
   gather_facts: False
 
   tasks:
-    - reboot:
+    - lineinfile:
+        path: /var/www/html/configure.php
+        regexp: API_SERVER_PORT
+        line: "define('API_SERVER_PORT','7000');"
       when: groups['tag_role_web'][student_number|int] == inventory_hostname
 
-
-- hosts: tag_role_api
-  gather_facts: False
-
-  tasks:
-    - reboot:
-      when: groups['tag_role_api'][student_number|int] == inventory_hostname
 
