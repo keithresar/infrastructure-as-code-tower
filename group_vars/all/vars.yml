@@ -1,0 +1,17 @@
+---
+
+ansible_ssh_private_key_file: ./files/infra-as-code.pem
+
+aws_ssh_key_name: infra-as-code
+aws_region: us-east-1
+aws_vpc_name: Infrastructure as Code Workshop
+aws_vpc_cidr: 10.10.0.0/16
+aws_web_subnet_name: infra_as_code_web
+aws_web_subnet_cidr: 10.10.10.0/24
+aws_api_subnet_name: infra_as_code_api
+aws_api_subnet_cidr: 10.10.11.0/24
+aws_bastion_subnet_name: infra_as_code_bastion
+aws_bastion_subnet_cidr: 10.10.12.0/24
+
+ansible_ssh_user: ec2-user
+
