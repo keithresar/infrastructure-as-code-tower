@@ -3,7 +3,6 @@
 - hosts: all
   gather_facts: False
   become: False
-  delegate_to: localhost
 
   tasks:
     - fail:
