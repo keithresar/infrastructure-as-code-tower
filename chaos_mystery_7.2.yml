@@ -2,7 +2,7 @@
 
 - hosts: all
   gather_facts: False
-  become: False
+  become: True
 
   tasks:
     - fail:
