@@ -1,7 +1,9 @@
 ---
 
 - hosts: all
-  gather_facts: True
+  gather_facts: False
+  become: False
+  delegate_to: localhost
 
   tasks:
     - fail:
@@ -10,9 +12,14 @@
 
 
 - hosts: tag_role_web
-  gather_facts: True
+  gather_facts: False
 
   tasks:
+    - debug:
+        var: inventory_hostname
+    - debug:
+        var: groups['tag_role_web'][student_number|int]
+
     - reboot:
       when: groups['tag_role_web'][student_number|int] == inventory_hostname
 
