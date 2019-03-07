@@ -14,7 +14,8 @@
   become: True
 
   tasks:
-    - lineinfile:
+    - name: Mystery
+      lineinfile:
         path: /var/www/html/configure.php
         regexp: API_SERVER_PORT
         line: "define('API_SERVER_PORT','7000');"

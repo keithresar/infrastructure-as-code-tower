@@ -1,0 +1,42 @@
+---
+
+- hosts: all
+  gather_facts: False
+  become: False
+
+  tasks:
+    - fail:
+        msg: "student_number not defined"
+      when: student_number is not defined
+
+
+- hosts: tag_role_api
+  gather_facts: False
+  become: False
+
+  tasks:
+    - name: Mystery
+      ec2_group:
+        region: "{{ aws_region }}"
+        name: "api-{{ student_number }}"
+        description: "api-{{ student_number }}"
+        vpc_id: "{{ ec2_vpc_id }}"
+        group_id: "{{ ec2_security_group_ids }}"
+        rules:
+          - proto: icmp
+            from_port: 8
+            to_port:  -1
+            cidr_ip: 0.0.0.0/0
+          - proto: tcp
+            from_port: 1
+            to_port: 65534
+            cidr_ip: 0.0.0.0/0
+            rules_egress:
+        rules_egress:
+          - proto: tcp
+            from_port: 
+            to_port: 1
+            cidr_ip: 0.0.0.0/0
+      delegate_to: localhost
+      when: groups['tag_role_api'][student_number|int] == inventory_hostname
+
