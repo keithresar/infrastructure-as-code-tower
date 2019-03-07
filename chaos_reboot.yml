@@ -15,7 +15,6 @@
 
   tasks:
     - reboot:
-        reboot_timeout: 300
       when: groups['tag_role_web'][student_number|int] == inventory_hostname
 
 
@@ -24,6 +23,5 @@
 
   tasks:
     - reboot:
-        reboot_timeout: 300
       when: groups['tag_role_api'][student_number|int] == inventory_hostname
 
