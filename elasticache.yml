@@ -1,0 +1,65 @@
+---
+
+- hosts: localhost
+  gather_facts: False
+
+  tasks:
+    - name: Find VPC
+      ec2_vpc_net:
+        aws_access_key: "{{ aws_access_key }}"
+        aws_secret_key: "{{ aws_secret_key }}"
+        name: "{{ aws_vpc_name }}"
+        cidr_block: "{{ aws_vpc_cidr }}"
+        region: "{{ aws_region }}"
+      register: vpc
+
+    - name: Find api subnet
+      ec2_vpc_subnet:
+        aws_access_key: "{{ aws_access_key }}"
+        aws_secret_key: "{{ aws_secret_key }}"
+        region: "{{ aws_region }}"
+        vpc_id: "{{ vpc.vpc.id }}"
+        cidr: "{{ aws_api_subnet_cidr }}"
+      register: subnet
+
+    - name: Find api security group
+      ec2_group_facts:
+        aws_access_key: "{{ aws_access_key }}"
+        aws_secret_key: "{{ aws_secret_key }}"
+        region: "{{ aws_region }}"
+        filters:
+          vpc-id: "{{ vpc.vpc.id }}"
+          group-name: infra_as_code_api
+      register: sg
+
+    - name: Create Elasticache Subnet Group
+      elasticache_subnet_group:
+        aws_access_key: "{{ aws_access_key }}"
+        aws_secret_key: "{{ aws_secret_key }}"
+        region: "{{ aws_region }}"
+        state: present
+        name: "api-es-sg"
+        description: "Elasticache"
+        subnets: "{{ subnet.subnet.id }}"
+
+    - name: Create Redis Elasticache instance
+      elasticache:
+        aws_access_key: "{{ aws_access_key }}"
+        aws_secret_key: "{{ aws_secret_key }}"
+        region: "{{ aws_region }}"
+        name: "api-es"
+        state: present
+        engine: redis
+        node_type: cache.t2.micro
+        num_nodes: 1
+        cache_port: 6379
+        cache_subnet_group: "api-es-sg"
+        security_group_ids:
+          - "{{ sg.security_groups[0].group_id }}"
+        wait: yes
+      register: elasticache
+
+    - name: Elasticache endpoint
+      debug:
+        msg: "{{ elasticache.elasticache.data.CacheNodes[0].Endpoint }}"
+
