@@ -14,20 +14,16 @@
   gather_facts: False
 
   tasks:
-    - debug:
-        var: inventory_hostname
-    - debug:
-        var: groups['tag_role_web'][student_number|int]
-
     - reboot:
+        reboot_timeout: 300
       when: groups['tag_role_web'][student_number|int] == inventory_hostname
 
 
 - hosts: tag_role_api
   gather_facts: False
-  become: False
 
   tasks:
     - reboot:
+        reboot_timeout: 300
       when: groups['tag_role_api'][student_number|int] == inventory_hostname
 
