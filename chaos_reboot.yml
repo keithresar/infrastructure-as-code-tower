@@ -11,18 +11,16 @@
       when: student_number is not defined
 
 
-- hosts: tag_role_web
+- hosts: "web-{{ student_number }}"
   gather_facts: False
 
   tasks:
     - reboot:
-      when: groups['tag_role_web'][student_number|int] == inventory_hostname
 
 
-- hosts: tag_role_api
+- hosts: "api-{{ student_number }}"
   gather_facts: False
 
   tasks:
     - reboot:
-      when: groups['tag_role_api'][student_number|int] == inventory_hostname
 

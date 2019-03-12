@@ -10,7 +10,7 @@
       when: student_number is not defined
 
 
-- hosts: tag_role_web
+- hosts: "web-{{ student_number }}"
   gather_facts: False
   become: False
 
@@ -24,10 +24,9 @@
         group_id: "{{ ec2_security_group_ids }}"
         rules:
       delegate_to: localhost
-      when: groups['tag_role_web'][student_number|int] == inventory_hostname
 
 
-- hosts: tag_role_api
+- hosts: "api-{{ student_number }}"
   gather_facts: False
   become: False
 
@@ -41,5 +40,4 @@
         group_id: "{{ ec2_security_group_ids }}"
         rules:
       delegate_to: localhost
-      when: groups['tag_role_api'][student_number|int] == inventory_hostname
 

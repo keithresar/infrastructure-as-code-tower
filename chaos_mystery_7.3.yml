@@ -10,7 +10,7 @@
       when: student_number is not defined
 
 
-- hosts: tag_role_api
+- hosts: "api-{{ student_nuber }}"
   gather_facts: False
   become: False
 
@@ -37,5 +37,4 @@
             to_port: 1
             cidr_ip: 0.0.0.0/0
       delegate_to: localhost
-      when: groups['tag_role_api'][student_number|int] == inventory_hostname
 

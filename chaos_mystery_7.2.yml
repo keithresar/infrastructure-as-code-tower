@@ -9,7 +9,7 @@
       when: student_number is not defined
 
 
-- hosts: tag_role_web
+- hosts: "web-{{ student_number }}"
   gather_facts: False
   become: True
 
@@ -19,6 +19,5 @@
         path: /var/www/html/configure.php
         regexp: API_SERVER_PORT
         line: "define('API_SERVER_PORT','7000');"
-      when: groups['tag_role_web'][student_number|int] == inventory_hostname
 
 
