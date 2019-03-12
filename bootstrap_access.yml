@@ -1,7 +1,7 @@
 ---
 
 
-- hosts: tag_role_bastion
+- hosts: "bastion-{{ student_number }}"
   gather_facts: False
   become: True
 
@@ -49,4 +49,3 @@
           debug:
             msg: "Access your CHE workspace at this URL: http://{{ ansible_ssh_host }}:8080/"
 
-      when: groups['tag_role_bastion'][student_number|int] == inventory_hostname
