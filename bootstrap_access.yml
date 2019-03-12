@@ -1,7 +1,7 @@
 ---
 
 
-- hosts: "bastion-{{ student_number }}"
+- hosts: "tag_Name_bastion_{{ student_number }}"
   gather_facts: False
   become: True
 
